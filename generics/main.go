@@ -6,25 +6,25 @@ import (
 )
 
 type App struct {
-	Number int
+	Port int
 }
 
 func (app *App) Reflect()(reflect.Type, reflect.Type){
-	return reflect.TypeOf(app.Number), reflect.TypeOf(app)
+	return reflect.TypeOf(app.Port), reflect.TypeOf(app)
 }
 
 type Router struct {
-	Number string
+	BaseAddr string
 }
 
 type ExtendedRouter struct {
 	App reflect.Type
-	Value reflect.Type
+	Addr reflect.Type
 }
 
 func (router *Router) Reflect()(reflect.Type, reflect.Type){
 	ExtendedRouter := ExtendedRouter{
-		Value: reflect.TypeOf(router.Number),
+		Addr: reflect.TypeOf(router.BaseAddr),
 	}
 	return reflect.TypeOf(ExtendedRouter), reflect.TypeOf(router)
 }
@@ -38,8 +38,8 @@ type Gateway[T Source] struct {
     Data T
 }
 
-func (text Gateway[Source]) Reflect()(reflect.Type, reflect.Type)  {
-	return text.Data.Reflect()
+func (gateway Gateway[Source]) Reflect()(reflect.Type, reflect.Type)  {
+	return gateway.Data.Reflect()
 }
 
 func Print(A reflect.Type, B reflect.Type){
@@ -61,7 +61,7 @@ func NewRouterGateway(router Router) Gateway[*Router]{
 func main() {
 	fmt.Println("Generics\n")
 	router := Router{
-		Number: "xd",
+		BaseAddr: "xd",
 	}
 	routerGateway := Gateway[*Router]{
 		Data: &router,
@@ -70,7 +70,7 @@ func main() {
 
 	fmt.Println("\nApp example!")
 	app := App{
-		Number: 1,
+		Port: 8080,
 	}
 	appGateway := Gateway[*App]{
 		Data: &app,
