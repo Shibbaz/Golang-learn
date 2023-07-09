@@ -42,19 +42,31 @@ func (text Gateway[Source]) Reflect()(reflect.Type, reflect.Type)  {
 	return text.Data.Reflect()
 }
 
-func main() {
-	fmt.Println("Generic\n")
+func Print(A reflect.Type, B reflect.Type){
+	fmt.Println(A, B)
+}
 
-	fmt.Println("\nRouter example!")
+func NewAppGateway(app App) Gateway[*App]{
+	return Gateway[*App]{
+		Data: &app,
+	}
+}
+
+func NewRouterGateway(router Router) Gateway[*Router]{
+	return Gateway[*Router]{
+		Data: &router,
+	}
+}
+
+func main() {
+	fmt.Println("Generics\n")
 	router := Router{
 		Number: "xd",
 	}
 	routerGateway := Gateway[*Router]{
 		Data: &router,
 	}
-	routerTypeA, routerTypeB := routerGateway.Reflect()
-	fmt.Println(routerTypeA)
-	fmt.Println(routerTypeB)
+	Print(routerGateway.Reflect())
 
 	fmt.Println("\nApp example!")
 	app := App{
@@ -63,8 +75,6 @@ func main() {
 	appGateway := Gateway[*App]{
 		Data: &app,
 	}
-	appTypeA, appTypeB := appGateway.Reflect()
-	fmt.Println(appTypeA)
-	fmt.Println(appTypeB)
+	Print(appGateway.Reflect())
 }
 
