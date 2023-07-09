@@ -14,6 +14,12 @@ type Gateway[T Source] struct {
     Data T
 }
 
+func NewRouterGateway(router Router) Gateway[*Router]{
+	return Gateway[*Router]{
+		Data: &router,
+	}
+}
+
 func (gateway Gateway[Source]) Reflect()(reflect.Type, reflect.Type)  {
 	return gateway.Data.Reflect()
 }

@@ -13,12 +13,6 @@ type Router struct {
 	BaseAddr string
 }
 
-func NewRouterGateway(router Router) Gateway[*Router]{
-	return Gateway[*Router]{
-		Data: &router,
-	}
-}
-
 func (router *Router) Reflect()(reflect.Type, reflect.Type){
 	ExtendedRouter := ExtendedRouter{
 		Addr: reflect.TypeOf(router.BaseAddr),
