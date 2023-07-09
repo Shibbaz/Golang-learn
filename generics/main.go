@@ -9,6 +9,14 @@ type App struct {
 	Port int
 }
 
+func (app *App) SetPort(port int){
+	app.Port = port
+}
+
+func (app *App) GetPort() int{
+	return app.Port
+}
+
 func (app *App) Reflect()(reflect.Type, reflect.Type){
 	return reflect.TypeOf(app.Port), reflect.TypeOf(app)
 }
@@ -27,6 +35,14 @@ func (router *Router) Reflect()(reflect.Type, reflect.Type){
 		Addr: reflect.TypeOf(router.BaseAddr),
 	}
 	return reflect.TypeOf(ExtendedRouter), reflect.TypeOf(router)
+}
+
+func (router *Router) SetBaseAddr(baseAddr string){
+	router.BaseAddr = baseAddr;
+}
+
+func (router *Router) GetBaseAddr() string{
+	return router.BaseAddr
 }
 
 type Source interface {
@@ -63,6 +79,8 @@ func main() {
 	router := Router{
 		BaseAddr: "xd",
 	}
+	router.SetBaseAddr("localhost")
+	fmt.Println("new baseaddr ", router.GetBaseAddr())
 	routerGateway := Gateway[*Router]{
 		Data: &router,
 	}
@@ -72,6 +90,8 @@ func main() {
 	app := App{
 		Port: 8080,
 	}
+	app.SetPort(9000)
+	fmt.Println("new port ", app.GetPort())
 	appGateway := Gateway[*App]{
 		Data: &app,
 	}
