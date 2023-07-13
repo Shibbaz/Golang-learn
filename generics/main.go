@@ -63,19 +63,6 @@ func NewTransaction[A Account, B Account](Source A, Direction B, Amount int, Cur
 	}
 	return TransactionA, TransactionB
 }
-var cryptoXMarket = Market[*CryptoAccount]{
-	Name: "Shibba",
-	Volume: 1092222222222222222,
-	Hash: uuid.New().String(),
-	transactions: map[string]Transaction[*CryptoAccount, *CryptoAccount]{},
-}
-
-var bankXMarket = Market[*BankingAccount]{
-	Name: "Shibba",
-	Volume: 1092222222222222222,
-	Hash: uuid.New().String(),
- 	transactions: map[string]Transaction[*BankingAccount, *BankingAccount]{},
-}
 
 var banks = BankMarket{
 	relation: map[string]Market[*BankingAccount]{},
