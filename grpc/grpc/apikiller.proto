@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "ApiKillerProto";
+option go_package =  "grpc/apikiller.proto;apikiller_proto";
+
+package grpc;
+
+service API {
+  rpc getAllUsers (APIRequest) returns (APIReply) {}
+  rpc getUserById (UserArgs) returns (APIReply) {}
+  rpc createUser (UserArgs) returns (APIReply) {}
+
+}
+
+message APIRequest {}
+
+
+message UserArgs {
+  string id = 1;
+  string name = 2;
+  string surname = 3;
+}
+
+message APIReply {
+  string message = 1;
+}

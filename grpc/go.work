@@ -1,0 +1,10 @@
+go 1.20
+
+use (
+	.
+	./grpc
+	./client
+	./server
+	./prisma
+	./generated/prisma-client
+)
