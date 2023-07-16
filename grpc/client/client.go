@@ -56,7 +56,19 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf(r.Message)
-	r, err = c.GetAllUsers(ctx, &pb.APIRequest{})
+
+	r, err = c.CreatePost(ctx, &pb.PostArgs{
+		Title:    "Kamil",
+		AuthorId: Id,
+	})
+	if err != nil {
+		log.Fatalf("could not delete: %v", err)
+	}
+	log.Printf(r.Message)
+	r, err = c.GetAllUsers(ctx, &pb.APIRequest{
+		Limit: 3,
+		Page:  1,
+	})
 	if err != nil {
 		log.Fatalf("could not get all users: %v", err)
 	}
@@ -80,9 +92,10 @@ func main() {
 	}
 	log.Printf(r.Message)
 
-	r, err = c.DeleteUser(ctx, &pb.UserArgs{Id: Id})
-	if err != nil {
-		log.Fatalf("could not delete: %v", err)
-	}
-	log.Printf(r.Message)
+	//r, err = c.DeleteUser(ctx, &pb.UserArgs{Id: Id})
+	//if err != nil {
+	//	log.Fatalf("could not delete: %v", err)
+	//}
+	//log.Printf(r.Message)
+
 }

@@ -6,5 +6,5 @@ use (
 	./client
 	./server
 	./prisma
-	./generated/prisma-client
+	./prisma/generated/prisma-client
 )

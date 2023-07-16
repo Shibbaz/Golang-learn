@@ -1,4 +1,4 @@
-module prisma-client
+module prisma_client
 
 go 1.20
 

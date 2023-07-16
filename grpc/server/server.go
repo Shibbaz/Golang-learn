@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"prisma-client"
+	prisma "prisma_client"
 )
 
 var (
@@ -19,10 +19,19 @@ type server struct{}
 func (s *server) GetAllUsers(ctx context.Context, in *pb.APIRequest) (*pb.APIReply, error) {
 	Client := prisma.New(nil)
 	Context := context.TODO()
-
 	users, err := Client.Users(nil).Exec(Context)
 	if err != nil {
 		panic(err)
+	}
+	if in.Page > 0 && in.Limit > 0 {
+		skip := in.Page * in.Limit
+		users, err = Client.Users(&prisma.UsersParams{
+			First: &in.Limit,
+			Skip:  &skip,
+		}).Exec(Context)
+		if err != nil {
+			panic(err)
+		}
 	}
 	fmt.Printf("GetAllUsers resolver %+v\n", users)
 
@@ -106,6 +115,30 @@ func (s *server) UpdateUser(ctx context.Context, in *pb.UserArgs) (*pb.APIReply,
 	}
 	fmt.Printf("Updated user: %+v\n", user)
 	out, err := json.Marshal(user)
+	if err != nil {
+		panic(err)
+	}
+	return &pb.APIReply{Message: string(out)}, nil
+}
+
+func (s *server) CreatePost(ctx context.Context, in *pb.PostArgs) (*pb.APIReply, error) {
+	Client := prisma.New(nil)
+	Context := context.TODO()
+	post, err := Client.CreatePost(prisma.PostCreateInput{
+		Title: in.Title,
+		Author: &prisma.UserCreateOneInput{
+			Connect: &prisma.UserWhereUniqueInput{
+				ID: &in.AuthorId,
+			},
+		},
+	},
+	).Exec(Context)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Create post: %+v\n", post)
+
+	out, err := json.Marshal(post)
 	if err != nil {
 		panic(err)
 	}
