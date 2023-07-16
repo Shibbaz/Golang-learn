@@ -1,4 +1,4 @@
-module grpc
+module apikiller
 
 go 1.20
 

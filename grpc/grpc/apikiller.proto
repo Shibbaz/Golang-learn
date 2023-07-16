@@ -5,13 +5,14 @@ option java_package = "io.grpc.examples.helloworld";
 option java_outer_classname = "ApiKillerProto";
 option go_package =  "grpc/apikiller.proto;apikiller_proto";
 
-package grpc;
+package apikiller;
 
 service API {
   rpc getAllUsers (APIRequest) returns (APIReply) {}
   rpc getUserById (UserArgs) returns (APIReply) {}
   rpc createUser (UserArgs) returns (APIReply) {}
-
+  rpc deleteUser (UserArgs) returns (APIReply) {}
+  rpc updateUser (UserArgs) returns (APIReply) {}
 }
 
 message APIRequest {}
