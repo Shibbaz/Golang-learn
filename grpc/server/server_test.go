@@ -235,3 +235,52 @@ func TestUpdateUser(t *testing.T) {
 		})
 	}
 }
+
+func TestCreatePost(t *testing.T) {
+	ctx := context.Background()
+
+	client, closer := NewTestServer(ctx)
+	defer closer()
+	id := generate(6)
+	type expectation struct {
+		out *pb.APIReply
+		err error
+	}
+	tests := map[string]struct {
+		in       *pb.UserArgs
+		expected expectation
+	}{
+		"Must_Success": {
+			in: &pb.UserArgs{
+				Id:      id,
+				Name:    "kamil44",
+				Surname: "Mos44",
+			},
+			expected: expectation{
+				out: &pb.APIReply{
+					Message: "[{ID:" + id + " Title:Kamil}]",
+				},
+				err: nil,
+			},
+		},
+	}
+
+	for scenario, tt := range tests {
+		t.Run(scenario, func(t *testing.T) {
+			_, err := client.CreateUser(ctx, tt.in)
+			if err != nil {
+				panic(err)
+			}
+			post, err := client.CreatePost(ctx, &pb.PostArgs{
+				Title:    "Kamil",
+				AuthorId: id,
+			})
+			if err != nil {
+				panic(err)
+			}
+			if tt.expected.out.Message != "[{ID:"+id+" Title:Kamil}]" {
+				t.Errorf("Out -> \nWant: %q\nGot: %q", tt.expected.out, post)
+			}
+		})
+	}
+}
