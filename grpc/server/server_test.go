@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"crypto/rand"
+	"fmt"
 	pb "grpc"
 	"log"
 	"net"
@@ -137,6 +138,52 @@ func TestGetUserById(t *testing.T) {
 			}
 			if tt.expected.out.Message == "[{Name:kamil Surname:Mos}]" {
 				t.Errorf("Out -> \nWant: %q\nGot: %q", tt.expected.out, users)
+			}
+		})
+	}
+}
+
+func TestDeleteUser(t *testing.T) {
+	ctx := context.Background()
+
+	client, closer := NewTestServer(ctx)
+	defer closer()
+	id := generate(6)
+	type expectation struct {
+		out *pb.APIReply
+		err error
+	}
+	message := fmt.Sprintf("Deleted user %s", id)
+
+	tests := map[string]struct {
+		in       *pb.UserArgs
+		expected expectation
+	}{
+		"Must_Success": {
+			in: &pb.UserArgs{
+				Id: id,
+			},
+			expected: expectation{
+				out: &pb.APIReply{
+					Message: message,
+				},
+				err: nil,
+			},
+		},
+	}
+
+	for scenario, tt := range tests {
+		t.Run(scenario, func(t *testing.T) {
+			_, err := client.CreateUser(ctx, tt.in)
+			if err != nil {
+				panic(err)
+			}
+			_, err = client.DeleteUser(ctx, tt.in)
+			if err != nil {
+				panic(err)
+			}
+			if tt.expected.out.Message != message {
+				t.Errorf("Out -> \nWant: %q\nGot: %q", tt.expected.out, message)
 			}
 		})
 	}
