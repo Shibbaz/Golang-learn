@@ -290,8 +290,8 @@ func TestUpdatePost(t *testing.T) {
 
 	client, closer := NewTestServer(ctx)
 	defer closer()
-	userId := generate(6)
-	postId := generate(6)
+	UserId := generate(6)
+	PostId := generate(6)
 
 	type expectation struct {
 		out *pb.APIReply
@@ -304,47 +304,44 @@ func TestUpdatePost(t *testing.T) {
 	}{
 		"Must_Success": {
 			in: &pb.PostArgs{
-				Id:          postId,
-				Title:       "kamil44",
-				Description: "Mos44",
+				Id:          PostId,
+				Title:       "Kamils",
+				Description: "XD",
 			},
 			expected: expectation{
 				out: &pb.APIReply{
-					Message: "[{ID:" + postId + " Title:kamil44 Description:Mos44}]",
+					Message: "[{ID:" + PostId + " Title:Kamils Description:XD}]",
 				},
 				err: nil,
 			},
 		},
 	}
+	go client.CreatePost(ctx, &pb.PostArgs{
+		Id:          PostId,
+		Title:       "Kamil",
+		Description: "X",
+		AuthorId:    UserId,
+	})
 
 	for scenario, tt := range tests {
-		t.Run(scenario, func(t *testing.T) {
+		go t.Run(scenario, func(t *testing.T) {
 
 			_, err := client.CreateUser(ctx, &pb.UserArgs{
-				Id:      userId,
+				Id:      UserId,
 				Name:    "Kamil",
 				Surname: "Mos",
 			})
 			if err != nil {
 				panic(err)
 			}
-			client.CreatePost(ctx, &pb.PostArgs{
-				Id:       postId,
-				Title:    "Kamil",
-				AuthorId: userId,
-			})
 			if err != nil {
 				panic(err)
 			}
-			post, err := client.UpdatePost(ctx, &pb.PostArgs{
-				Id:          postId,
-				Title:       "Kamils",
-				Description: "XD",
-			})
+			post, err := client.UpdatePost(ctx, tt.in)
 			if err != nil {
 				panic(err)
 			}
-			if tt.expected.out.Message != "[{ID:"+postId+" Title:kamil44 Description:Mos44}]" {
+			if tt.expected.out.Message != "[{ID:"+PostId+" Title:Kamils Description:XD}]" {
 				t.Errorf("Out -> \nWant: %q\nGot: %q", tt.expected.out, post)
 			}
 		})
