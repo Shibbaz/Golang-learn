@@ -25,6 +25,8 @@ type APIClient interface {
 	DeleteUser(ctx context.Context, in *UserArgs, opts ...grpc.CallOption) (*APIReply, error)
 	UpdateUser(ctx context.Context, in *UserArgs, opts ...grpc.CallOption) (*APIReply, error)
 	CreatePost(ctx context.Context, in *PostArgs, opts ...grpc.CallOption) (*APIReply, error)
+	DeletePost(ctx context.Context, in *PostArgs, opts ...grpc.CallOption) (*APIReply, error)
+	UpdatePost(ctx context.Context, in *PostArgs, opts ...grpc.CallOption) (*APIReply, error)
 }
 
 type aPIClient struct {
@@ -89,6 +91,24 @@ func (c *aPIClient) CreatePost(ctx context.Context, in *PostArgs, opts ...grpc.C
 	return out, nil
 }
 
+func (c *aPIClient) DeletePost(ctx context.Context, in *PostArgs, opts ...grpc.CallOption) (*APIReply, error) {
+	out := new(APIReply)
+	err := c.cc.Invoke(ctx, "/apikiller.API/deletePost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIClient) UpdatePost(ctx context.Context, in *PostArgs, opts ...grpc.CallOption) (*APIReply, error) {
+	out := new(APIReply)
+	err := c.cc.Invoke(ctx, "/apikiller.API/updatePost", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // APIServer is the server API for API service.
 // All implementations must embed UnimplementedAPIServer
 // for forward compatibility
@@ -99,6 +119,8 @@ type APIServer interface {
 	DeleteUser(context.Context, *UserArgs) (*APIReply, error)
 	UpdateUser(context.Context, *UserArgs) (*APIReply, error)
 	CreatePost(context.Context, *PostArgs) (*APIReply, error)
+	DeletePost(context.Context, *PostArgs) (*APIReply, error)
+	UpdatePost(context.Context, *PostArgs) (*APIReply, error)
 }
 
 // UnimplementedAPIServer must be embedded to have forward compatible implementations.
@@ -122,6 +144,12 @@ func (UnimplementedAPIServer) UpdateUser(context.Context, *UserArgs) (*APIReply,
 }
 func (UnimplementedAPIServer) CreatePost(context.Context, *PostArgs) (*APIReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePost not implemented")
+}
+func (UnimplementedAPIServer) DeletePost(context.Context, *PostArgs) (*APIReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePost not implemented")
+}
+func (UnimplementedAPIServer) UpdatePost(context.Context, *PostArgs) (*APIReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePost not implemented")
 }
 func (UnimplementedAPIServer) mustEmbedUnimplementedAPIServer() {}
 
@@ -244,6 +272,42 @@ func _API_CreatePost_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _API_DeletePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServer).DeletePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/apikiller.API/deletePost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServer).DeletePost(ctx, req.(*PostArgs))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _API_UpdatePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostArgs)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServer).UpdatePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/apikiller.API/updatePost",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServer).UpdatePost(ctx, req.(*PostArgs))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // API_ServiceDesc is the grpc.ServiceDesc for API service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,6 +338,14 @@ var API_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "createPost",
 			Handler:    _API_CreatePost_Handler,
+		},
+		{
+			MethodName: "deletePost",
+			Handler:    _API_DeletePost_Handler,
+		},
+		{
+			MethodName: "updatePost",
+			Handler:    _API_UpdatePost_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

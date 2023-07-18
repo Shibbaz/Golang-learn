@@ -284,3 +284,69 @@ func TestCreatePost(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdatePost(t *testing.T) {
+	ctx := context.Background()
+
+	client, closer := NewTestServer(ctx)
+	defer closer()
+	userId := generate(6)
+	postId := generate(6)
+
+	type expectation struct {
+		out *pb.APIReply
+		err error
+	}
+
+	tests := map[string]struct {
+		in       *pb.PostArgs
+		expected expectation
+	}{
+		"Must_Success": {
+			in: &pb.PostArgs{
+				Id:          postId,
+				Title:       "kamil44",
+				Description: "Mos44",
+			},
+			expected: expectation{
+				out: &pb.APIReply{
+					Message: "[{ID:" + postId + " Title:kamil44 Description:Mos44}]",
+				},
+				err: nil,
+			},
+		},
+	}
+
+	for scenario, tt := range tests {
+		t.Run(scenario, func(t *testing.T) {
+
+			_, err := client.CreateUser(ctx, &pb.UserArgs{
+				Id:      userId,
+				Name:    "Kamil",
+				Surname: "Mos",
+			})
+			if err != nil {
+				panic(err)
+			}
+			client.CreatePost(ctx, &pb.PostArgs{
+				Id:       postId,
+				Title:    "Kamil",
+				AuthorId: userId,
+			})
+			if err != nil {
+				panic(err)
+			}
+			post, err := client.UpdatePost(ctx, &pb.PostArgs{
+				Id:          postId,
+				Title:       "Kamils",
+				Description: "XD",
+			})
+			if err != nil {
+				panic(err)
+			}
+			if tt.expected.out.Message != "[{ID:"+postId+" Title:kamil44 Description:Mos44}]" {
+				t.Errorf("Out -> \nWant: %q\nGot: %q", tt.expected.out, post)
+			}
+		})
+	}
+}

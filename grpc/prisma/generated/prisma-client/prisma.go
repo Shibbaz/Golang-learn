@@ -67,7 +67,7 @@ func (client *Client) Post(params PostWhereUniqueInput) *PostExec {
 		params,
 		[2]string{"PostWhereUniqueInput!", "Post"},
 		"post",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostExec{ret}
 }
@@ -101,7 +101,7 @@ func (client *Client) Posts(params *PostsParams) *PostExecArray {
 		wparams,
 		[3]string{"PostWhereInput", "PostOrderByInput", "Post"},
 		"posts",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostExecArray{ret}
 }
@@ -262,7 +262,7 @@ func (client *Client) CreatePost(params PostCreateInput) *PostExec {
 		params,
 		[2]string{"PostCreateInput!", "Post"},
 		"createPost",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostExec{ret}
 }
@@ -280,7 +280,7 @@ func (client *Client) UpdatePost(params PostUpdateParams) *PostExec {
 		},
 		[3]string{"PostUpdateInput!", "PostWhereUniqueInput!", "Post"},
 		"updatePost",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostExec{ret}
 }
@@ -317,7 +317,7 @@ func (client *Client) UpsertPost(params PostUpsertParams) *PostExec {
 		uparams,
 		[4]string{"PostWhereUniqueInput!", "PostCreateInput!", "PostUpdateInput!", "Post"},
 		"upsertPost",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostExec{ret}
 }
@@ -327,7 +327,7 @@ func (client *Client) DeletePost(params PostWhereUniqueInput) *PostExec {
 		params,
 		[2]string{"PostWhereUniqueInput!", "Post"},
 		"deletePost",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostExec{ret}
 }
@@ -420,16 +420,18 @@ func (client *Client) DeleteManyUsers(params *UserWhereInput) *BatchPayloadExec 
 type PostOrderByInput string
 
 const (
-	PostOrderByInputIDAsc         PostOrderByInput = "id_ASC"
-	PostOrderByInputIDDesc        PostOrderByInput = "id_DESC"
-	PostOrderByInputCreatedAtAsc  PostOrderByInput = "createdAt_ASC"
-	PostOrderByInputCreatedAtDesc PostOrderByInput = "createdAt_DESC"
-	PostOrderByInputUpdatedAtAsc  PostOrderByInput = "updatedAt_ASC"
-	PostOrderByInputUpdatedAtDesc PostOrderByInput = "updatedAt_DESC"
-	PostOrderByInputTitleAsc      PostOrderByInput = "title_ASC"
-	PostOrderByInputTitleDesc     PostOrderByInput = "title_DESC"
-	PostOrderByInputPublishedAsc  PostOrderByInput = "published_ASC"
-	PostOrderByInputPublishedDesc PostOrderByInput = "published_DESC"
+	PostOrderByInputIDAsc           PostOrderByInput = "id_ASC"
+	PostOrderByInputIDDesc          PostOrderByInput = "id_DESC"
+	PostOrderByInputCreatedAtAsc    PostOrderByInput = "createdAt_ASC"
+	PostOrderByInputCreatedAtDesc   PostOrderByInput = "createdAt_DESC"
+	PostOrderByInputUpdatedAtAsc    PostOrderByInput = "updatedAt_ASC"
+	PostOrderByInputUpdatedAtDesc   PostOrderByInput = "updatedAt_DESC"
+	PostOrderByInputTitleAsc        PostOrderByInput = "title_ASC"
+	PostOrderByInputTitleDesc       PostOrderByInput = "title_DESC"
+	PostOrderByInputDescriptionAsc  PostOrderByInput = "description_ASC"
+	PostOrderByInputDescriptionDesc PostOrderByInput = "description_DESC"
+	PostOrderByInputPublishedAsc    PostOrderByInput = "published_ASC"
+	PostOrderByInputPublishedDesc   PostOrderByInput = "published_DESC"
 )
 
 type UserOrderByInput string
@@ -456,56 +458,70 @@ type PostWhereUniqueInput struct {
 }
 
 type PostWhereInput struct {
-	ID                 *string          `json:"id,omitempty"`
-	IDNot              *string          `json:"id_not,omitempty"`
-	IDIn               []string         `json:"id_in,omitempty"`
-	IDNotIn            []string         `json:"id_not_in,omitempty"`
-	IDLt               *string          `json:"id_lt,omitempty"`
-	IDLte              *string          `json:"id_lte,omitempty"`
-	IDGt               *string          `json:"id_gt,omitempty"`
-	IDGte              *string          `json:"id_gte,omitempty"`
-	IDContains         *string          `json:"id_contains,omitempty"`
-	IDNotContains      *string          `json:"id_not_contains,omitempty"`
-	IDStartsWith       *string          `json:"id_starts_with,omitempty"`
-	IDNotStartsWith    *string          `json:"id_not_starts_with,omitempty"`
-	IDEndsWith         *string          `json:"id_ends_with,omitempty"`
-	IDNotEndsWith      *string          `json:"id_not_ends_with,omitempty"`
-	CreatedAt          *string          `json:"createdAt,omitempty"`
-	CreatedAtNot       *string          `json:"createdAt_not,omitempty"`
-	CreatedAtIn        []string         `json:"createdAt_in,omitempty"`
-	CreatedAtNotIn     []string         `json:"createdAt_not_in,omitempty"`
-	CreatedAtLt        *string          `json:"createdAt_lt,omitempty"`
-	CreatedAtLte       *string          `json:"createdAt_lte,omitempty"`
-	CreatedAtGt        *string          `json:"createdAt_gt,omitempty"`
-	CreatedAtGte       *string          `json:"createdAt_gte,omitempty"`
-	UpdatedAt          *string          `json:"updatedAt,omitempty"`
-	UpdatedAtNot       *string          `json:"updatedAt_not,omitempty"`
-	UpdatedAtIn        []string         `json:"updatedAt_in,omitempty"`
-	UpdatedAtNotIn     []string         `json:"updatedAt_not_in,omitempty"`
-	UpdatedAtLt        *string          `json:"updatedAt_lt,omitempty"`
-	UpdatedAtLte       *string          `json:"updatedAt_lte,omitempty"`
-	UpdatedAtGt        *string          `json:"updatedAt_gt,omitempty"`
-	UpdatedAtGte       *string          `json:"updatedAt_gte,omitempty"`
-	Title              *string          `json:"title,omitempty"`
-	TitleNot           *string          `json:"title_not,omitempty"`
-	TitleIn            []string         `json:"title_in,omitempty"`
-	TitleNotIn         []string         `json:"title_not_in,omitempty"`
-	TitleLt            *string          `json:"title_lt,omitempty"`
-	TitleLte           *string          `json:"title_lte,omitempty"`
-	TitleGt            *string          `json:"title_gt,omitempty"`
-	TitleGte           *string          `json:"title_gte,omitempty"`
-	TitleContains      *string          `json:"title_contains,omitempty"`
-	TitleNotContains   *string          `json:"title_not_contains,omitempty"`
-	TitleStartsWith    *string          `json:"title_starts_with,omitempty"`
-	TitleNotStartsWith *string          `json:"title_not_starts_with,omitempty"`
-	TitleEndsWith      *string          `json:"title_ends_with,omitempty"`
-	TitleNotEndsWith   *string          `json:"title_not_ends_with,omitempty"`
-	Published          *bool            `json:"published,omitempty"`
-	PublishedNot       *bool            `json:"published_not,omitempty"`
-	Author             *UserWhereInput  `json:"author,omitempty"`
-	And                []PostWhereInput `json:"AND,omitempty"`
-	Or                 []PostWhereInput `json:"OR,omitempty"`
-	Not                []PostWhereInput `json:"NOT,omitempty"`
+	ID                       *string          `json:"id,omitempty"`
+	IDNot                    *string          `json:"id_not,omitempty"`
+	IDIn                     []string         `json:"id_in,omitempty"`
+	IDNotIn                  []string         `json:"id_not_in,omitempty"`
+	IDLt                     *string          `json:"id_lt,omitempty"`
+	IDLte                    *string          `json:"id_lte,omitempty"`
+	IDGt                     *string          `json:"id_gt,omitempty"`
+	IDGte                    *string          `json:"id_gte,omitempty"`
+	IDContains               *string          `json:"id_contains,omitempty"`
+	IDNotContains            *string          `json:"id_not_contains,omitempty"`
+	IDStartsWith             *string          `json:"id_starts_with,omitempty"`
+	IDNotStartsWith          *string          `json:"id_not_starts_with,omitempty"`
+	IDEndsWith               *string          `json:"id_ends_with,omitempty"`
+	IDNotEndsWith            *string          `json:"id_not_ends_with,omitempty"`
+	CreatedAt                *string          `json:"createdAt,omitempty"`
+	CreatedAtNot             *string          `json:"createdAt_not,omitempty"`
+	CreatedAtIn              []string         `json:"createdAt_in,omitempty"`
+	CreatedAtNotIn           []string         `json:"createdAt_not_in,omitempty"`
+	CreatedAtLt              *string          `json:"createdAt_lt,omitempty"`
+	CreatedAtLte             *string          `json:"createdAt_lte,omitempty"`
+	CreatedAtGt              *string          `json:"createdAt_gt,omitempty"`
+	CreatedAtGte             *string          `json:"createdAt_gte,omitempty"`
+	UpdatedAt                *string          `json:"updatedAt,omitempty"`
+	UpdatedAtNot             *string          `json:"updatedAt_not,omitempty"`
+	UpdatedAtIn              []string         `json:"updatedAt_in,omitempty"`
+	UpdatedAtNotIn           []string         `json:"updatedAt_not_in,omitempty"`
+	UpdatedAtLt              *string          `json:"updatedAt_lt,omitempty"`
+	UpdatedAtLte             *string          `json:"updatedAt_lte,omitempty"`
+	UpdatedAtGt              *string          `json:"updatedAt_gt,omitempty"`
+	UpdatedAtGte             *string          `json:"updatedAt_gte,omitempty"`
+	Title                    *string          `json:"title,omitempty"`
+	TitleNot                 *string          `json:"title_not,omitempty"`
+	TitleIn                  []string         `json:"title_in,omitempty"`
+	TitleNotIn               []string         `json:"title_not_in,omitempty"`
+	TitleLt                  *string          `json:"title_lt,omitempty"`
+	TitleLte                 *string          `json:"title_lte,omitempty"`
+	TitleGt                  *string          `json:"title_gt,omitempty"`
+	TitleGte                 *string          `json:"title_gte,omitempty"`
+	TitleContains            *string          `json:"title_contains,omitempty"`
+	TitleNotContains         *string          `json:"title_not_contains,omitempty"`
+	TitleStartsWith          *string          `json:"title_starts_with,omitempty"`
+	TitleNotStartsWith       *string          `json:"title_not_starts_with,omitempty"`
+	TitleEndsWith            *string          `json:"title_ends_with,omitempty"`
+	TitleNotEndsWith         *string          `json:"title_not_ends_with,omitempty"`
+	Description              *string          `json:"description,omitempty"`
+	DescriptionNot           *string          `json:"description_not,omitempty"`
+	DescriptionIn            []string         `json:"description_in,omitempty"`
+	DescriptionNotIn         []string         `json:"description_not_in,omitempty"`
+	DescriptionLt            *string          `json:"description_lt,omitempty"`
+	DescriptionLte           *string          `json:"description_lte,omitempty"`
+	DescriptionGt            *string          `json:"description_gt,omitempty"`
+	DescriptionGte           *string          `json:"description_gte,omitempty"`
+	DescriptionContains      *string          `json:"description_contains,omitempty"`
+	DescriptionNotContains   *string          `json:"description_not_contains,omitempty"`
+	DescriptionStartsWith    *string          `json:"description_starts_with,omitempty"`
+	DescriptionNotStartsWith *string          `json:"description_not_starts_with,omitempty"`
+	DescriptionEndsWith      *string          `json:"description_ends_with,omitempty"`
+	DescriptionNotEndsWith   *string          `json:"description_not_ends_with,omitempty"`
+	Published                *bool            `json:"published,omitempty"`
+	PublishedNot             *bool            `json:"published_not,omitempty"`
+	Author                   *UserWhereInput  `json:"author,omitempty"`
+	And                      []PostWhereInput `json:"AND,omitempty"`
+	Or                       []PostWhereInput `json:"OR,omitempty"`
+	Not                      []PostWhereInput `json:"NOT,omitempty"`
 }
 
 type UserWhereInput struct {
@@ -561,10 +577,11 @@ type UserWhereUniqueInput struct {
 }
 
 type PostCreateInput struct {
-	ID        *string             `json:"id,omitempty"`
-	Title     string              `json:"title"`
-	Published *bool               `json:"published,omitempty"`
-	Author    *UserCreateOneInput `json:"author,omitempty"`
+	ID          *string             `json:"id,omitempty"`
+	Title       string              `json:"title"`
+	Description *string             `json:"description,omitempty"`
+	Published   *bool               `json:"published,omitempty"`
+	Author      *UserCreateOneInput `json:"author,omitempty"`
 }
 
 type UserCreateOneInput struct {
@@ -579,9 +596,10 @@ type UserCreateInput struct {
 }
 
 type PostUpdateInput struct {
-	Title     *string             `json:"title,omitempty"`
-	Published *bool               `json:"published,omitempty"`
-	Author    *UserUpdateOneInput `json:"author,omitempty"`
+	Title       *string             `json:"title,omitempty"`
+	Description *string             `json:"description,omitempty"`
+	Published   *bool               `json:"published,omitempty"`
+	Author      *UserUpdateOneInput `json:"author,omitempty"`
 }
 
 type UserUpdateOneInput struct {
@@ -604,8 +622,9 @@ type UserUpsertNestedInput struct {
 }
 
 type PostUpdateManyMutationInput struct {
-	Title     *string `json:"title,omitempty"`
-	Published *bool   `json:"published,omitempty"`
+	Title       *string `json:"title,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Published   *bool   `json:"published,omitempty"`
 }
 
 type UserUpdateInput struct {
@@ -681,14 +700,15 @@ func (instance PostExecArray) Exec(ctx context.Context) ([]Post, error) {
 	return v, err
 }
 
-var PostFields = []string{"id", "createdAt", "updatedAt", "title", "published"}
+var PostFields = []string{"id", "createdAt", "updatedAt", "title", "description", "published"}
 
 type Post struct {
-	ID        string `json:"id"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
-	Title     string `json:"title"`
-	Published bool   `json:"published"`
+	ID          string  `json:"id"`
+	CreatedAt   string  `json:"createdAt"`
+	UpdatedAt   string  `json:"updatedAt"`
+	Title       string  `json:"title"`
+	Description *string `json:"description,omitempty"`
+	Published   bool    `json:"published"`
 }
 
 type UserExec struct {
@@ -862,7 +882,7 @@ func (instance *PostEdgeExec) Node() *PostExec {
 		nil,
 		[2]string{"", "Post"},
 		"node",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostExec{ret}
 }
@@ -1042,7 +1062,7 @@ func (instance *PostSubscriptionPayloadExec) Node() *PostExec {
 		nil,
 		[2]string{"", "Post"},
 		"node",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostExec{ret}
 }
@@ -1053,7 +1073,7 @@ func (instance *PostSubscriptionPayloadExec) PreviousValues() *PostPreviousValue
 		nil,
 		[2]string{"", "PostPreviousValues"},
 		"previousValues",
-		[]string{"id", "createdAt", "updatedAt", "title", "published"})
+		[]string{"id", "createdAt", "updatedAt", "title", "description", "published"})
 
 	return &PostPreviousValuesExec{ret}
 }
@@ -1122,14 +1142,15 @@ func (instance PostPreviousValuesExecArray) Exec(ctx context.Context) ([]PostPre
 	return v, err
 }
 
-var PostPreviousValuesFields = []string{"id", "createdAt", "updatedAt", "title", "published"}
+var PostPreviousValuesFields = []string{"id", "createdAt", "updatedAt", "title", "description", "published"}
 
 type PostPreviousValues struct {
-	ID        string `json:"id"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
-	Title     string `json:"title"`
-	Published bool   `json:"published"`
+	ID          string  `json:"id"`
+	CreatedAt   string  `json:"createdAt"`
+	UpdatedAt   string  `json:"updatedAt"`
+	Title       string  `json:"title"`
+	Description *string `json:"description,omitempty"`
+	Published   bool    `json:"published"`
 }
 
 type UserSubscriptionPayloadExec struct {

@@ -125,7 +125,8 @@ func (s *server) CreatePost(ctx context.Context, in *pb.PostArgs) (*pb.APIReply,
 	Client := prisma.New(nil)
 	Context := context.TODO()
 	post, err := Client.CreatePost(prisma.PostCreateInput{
-		Title: in.Title,
+		Title:       in.Title,
+		Description: &in.Description,
 		Author: &prisma.UserCreateOneInput{
 			Connect: &prisma.UserWhereUniqueInput{
 				ID: &in.AuthorId,
@@ -144,6 +145,46 @@ func (s *server) CreatePost(ctx context.Context, in *pb.PostArgs) (*pb.APIReply,
 	}
 	return &pb.APIReply{Message: string(out)}, nil
 }
+
+func (s *server) DeletePost(ctx context.Context, in *pb.PostArgs) (*pb.APIReply, error) {
+	Client := prisma.New(nil)
+	Context := context.TODO()
+
+	_, err := Client.DeletePost(prisma.PostWhereUniqueInput{
+		ID: &in.Id,
+	}).Exec(Context)
+
+	if err != nil {
+		panic(err)
+	}
+	message := fmt.Sprintf("Deleted post %s", in.Id)
+	fmt.Printf(message)
+	return &pb.APIReply{Message: message}, nil
+}
+
+func (s *server) UpdatePost(ctx context.Context, in *pb.PostArgs) (*pb.APIReply, error) {
+	Client := prisma.New(nil)
+	Context := context.TODO()
+	post, err := Client.UpdatePost(prisma.PostUpdateParams{
+		Where: prisma.PostWhereUniqueInput{
+			ID: &in.Id,
+		},
+		Data: prisma.PostUpdateInput{
+			Title:       &in.Title,
+			Description: &in.Description,
+		},
+	}).Exec(Context)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Updated post: %+v\n", post)
+	out, err := json.Marshal(post)
+	if err != nil {
+		panic(err)
+	}
+	return &pb.APIReply{Message: string(out)}, nil
+}
+
 func NewServer() *server {
 	return &server{}
 }
