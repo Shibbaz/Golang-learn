@@ -7,6 +7,7 @@ import (
 	pb "grpc"
 	"log"
 	"net"
+	prisma "prisma_client"
 	"testing"
 	"unsafe"
 
@@ -290,14 +291,17 @@ func TestUpdatePost(t *testing.T) {
 
 	client, closer := NewTestServer(ctx)
 	defer closer()
-	UserId := generate(6)
-	PostId := generate(6)
 
 	type expectation struct {
 		out *pb.APIReply
 		err error
 	}
-
+	description := "X"
+	post, _ := prisma.New(nil).CreatePost(prisma.PostCreateInput{
+		Title:       "Kamil",
+		Description: &description,
+	}).Exec(ctx)
+	PostId := post.ID
 	tests := map[string]struct {
 		in       *pb.PostArgs
 		expected expectation
@@ -316,27 +320,9 @@ func TestUpdatePost(t *testing.T) {
 			},
 		},
 	}
-	go client.CreatePost(ctx, &pb.PostArgs{
-		Id:          PostId,
-		Title:       "Kamil",
-		Description: "X",
-		AuthorId:    UserId,
-	})
 
 	for scenario, tt := range tests {
-		go t.Run(scenario, func(t *testing.T) {
-
-			_, err := client.CreateUser(ctx, &pb.UserArgs{
-				Id:      UserId,
-				Name:    "Kamil",
-				Surname: "Mos",
-			})
-			if err != nil {
-				panic(err)
-			}
-			if err != nil {
-				panic(err)
-			}
+		t.Run(scenario, func(t *testing.T) {
 			post, err := client.UpdatePost(ctx, tt.in)
 			if err != nil {
 				panic(err)
