@@ -1,0 +1,6 @@
+[submodule "gateway/--force"]
+	path = gateway/--force
+	url = https://github.com/googleapis/googleapis
+[submodule "gateway/--name=googleapis"]
+	path = gateway/--name=googleapis
+	url = https://github.com/googleapis/googleapis
