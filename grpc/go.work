@@ -2,5 +2,6 @@ go 1.20
 
 use (
 	.
-	./proto/helloworld
+	./proto/
+	./proto/hello
 )

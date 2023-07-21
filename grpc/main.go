@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	pbHelloWorld "hello_proto"
+	pbHelloWorld "hello"
 	"log"
 	"net"
 	"net/http"
@@ -38,7 +38,7 @@ func main() {
 	}()
 
 	// Create a client connection to the gRPC server we just started
-	conn, err := grpc.DialContext(
+	_, err = grpc.DialContext(
 		context.Background(),
 		"0.0.0.0:8080",
 		grpc.WithBlock(),
@@ -51,11 +51,6 @@ func main() {
 	// Create a new ServeMux for the gRPC-Gateway
 	gwmux := runtime.NewServeMux()
 	// Register the Greeter service with the gRPC-Gateway
-	err = pbHelloWorld.RegisterGreeterHandler(context.Background(), gwmux, conn)
-	if err != nil {
-		log.Fatalln("Failed to register gateway:", err)
-	}
-
 	// Create a new HTTP server for the gRPC-Gateway
 	gwServer := &http.Server{
 		Addr:    ":8090",
