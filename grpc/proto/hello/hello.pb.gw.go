@@ -6,7 +6,7 @@ Package hello_proto is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package proto
+package hello
 
 import (
 	"context"
@@ -20,7 +20,6 @@ import (
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-
 	"google.golang.org/protobuf/proto"
 )
 

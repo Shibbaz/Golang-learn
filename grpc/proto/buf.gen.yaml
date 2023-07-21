@@ -6,9 +6,6 @@ plugins:
   - plugin: go-grpc
     out: proto
     opt: paths=source_relative
-  - plugin: grpc-gateway
-    out: proto
-    opt: paths=source_relative
   - plugin: buf.build/grpc/go:v1.3.0
     out: gen
     opt:
@@ -18,3 +15,6 @@ plugins:
     out: gen
     opt:
       - paths=source_relative
+  - plugin: grpc-gateway
+    out: proto
+    opt: paths=source_relative
