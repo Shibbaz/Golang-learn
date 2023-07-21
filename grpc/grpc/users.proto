@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package users;
+option go_package = "./users.proto";
+import "google/api/annotations.proto";
+
+service UsersAPI {
+  rpc getAllUsers (APIRequest) returns (UserReply) {
+    option (google.api.http) = {
+      post: "/v1/usersr/all"
+      body: "*"
+    };
+  }
+
+  rpc getUserById (UserArgs) returns (UserReply) {
+    option (google.api.http) = {
+      post: "/v1/users/user"
+      body: "*"
+    };
+  }
+
+  rpc createUser (UserArgs) returns (UserReply) {
+    option (google.api.http) = {
+      post: "/v1/users/create"
+      body: "*"
+    };
+  }
+
+  rpc deleteUser (UserArgs) returns (UserReply) {
+    option (google.api.http) = {
+      post: "/v1/users/delete"
+      body: "*"
+    };
+  }
+  rpc updateUser (UserArgs) returns (UserReply) {
+    option (google.api.http) = {
+      post: "/v1/users/update"
+      body: "*"
+    };
+  }
+}
+message UserArgs {
+  string id = 1;
+  string name = 2;
+  string surname = 3;
+}
+
+message APIRequest {
+  int32 limit = 1;
+  int32 page = 2;
+}
+
+message UserReply {
+  string message = 1;
+}
+

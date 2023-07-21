@@ -2,7 +2,13 @@ go 1.20
 
 use (
 	.
-	./proto/
-	./proto/hello
+	./grpc/users
+	./grpc/posts
+	./prisma
 	./clients/hello
+	./server
+	./prisma/generated/prisma-client
+	./tests
+	./tests/servers
+	./tests/helpers
 )
