@@ -13,3 +13,11 @@ type Post {
   published: Boolean! @default(value: false)
   author: User
 }
+
+type Comment {
+  id: ID! @id
+  text: String
+  published: Boolean! @default(value: false)
+  author: User
+  post: Post
+}

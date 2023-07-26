@@ -2,6 +2,7 @@ package servers
 
 import (
 	"context"
+	"fmt"
 	prisma "prisma_client"
 	"testing"
 
@@ -18,6 +19,8 @@ func TestCreatePost(t *testing.T) {
 	defer userCloser()
 
 	id := Generate(6)
+	postId := Generate(6)
+
 	type expectation struct {
 		out *PostsReply
 		err error
@@ -48,6 +51,7 @@ func TestCreatePost(t *testing.T) {
 				panic(err)
 			}
 			post, err := client.CreatePost(ctx, &PostArgs{
+				Id:       postId,
 				Title:    "Kamil",
 				AuthorId: id,
 			})
@@ -104,6 +108,51 @@ func TestUpdatePost(t *testing.T) {
 			}
 			if tt.expected.out.Message != "[{ID:"+PostId+" Title:Kamils Description:XD}]" {
 				t.Errorf("Out -> \nWant: %q\nGot: %q", tt.expected.out, post)
+			}
+		})
+	}
+}
+
+func TestDeletePost(t *testing.T) {
+	ctx := context.Background()
+	client, closer := NewPostsTestServer(ctx)
+	defer closer()
+
+	post, _ := prisma.New(nil).CreatePost(prisma.PostCreateInput{
+		Title: "Kamil",
+	}).Exec(ctx)
+
+	type expectation struct {
+		out *PostsReply
+		err error
+	}
+	message := fmt.Sprintf("Deleted post %s", post.ID)
+
+	tests := map[string]struct {
+		in       *PostArgs
+		expected expectation
+	}{
+		"Must_Success": {
+			in: &PostArgs{
+				Id: post.ID,
+			},
+			expected: expectation{
+				out: &PostsReply{
+					Message: message,
+				},
+				err: nil,
+			},
+		},
+	}
+
+	for scenario, tt := range tests {
+		t.Run(scenario, func(t *testing.T) {
+			_, err := client.DeletePost(ctx, tt.in)
+			if err != nil {
+				panic(err)
+			}
+			if tt.expected.out.Message != message {
+				t.Errorf("Out -> \nWant: %q\nGot: %q", tt.expected.out, message)
 			}
 		})
 	}

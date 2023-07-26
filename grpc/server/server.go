@@ -7,6 +7,7 @@ import (
 	"fmt"
 	prisma "prisma_client"
 
+	. "comments"
 	. "posts"
 	. "users"
 )
@@ -127,6 +128,7 @@ func (s *server) CreatePost(ctx context.Context, in *PostArgs) (*PostsReply, err
 	Client := prisma.New(nil)
 	Context := context.TODO()
 	post, err := Client.CreatePost(prisma.PostCreateInput{
+		ID:          &in.Id,
 		Title:       in.Title,
 		Description: &in.Description,
 		Author: &prisma.UserCreateOneInput{
@@ -189,4 +191,72 @@ func (s *server) UpdatePost(ctx context.Context, in *PostArgs) (*PostsReply, err
 
 func NewServer() *server {
 	return &server{}
+}
+
+func (s *server) CreateComment(ctx context.Context, in *CommentArgs) (*CommentsReply, error) {
+	Client := prisma.New(nil)
+	Context := context.TODO()
+	comment, err := Client.CreateComment(prisma.CommentCreateInput{
+		ID:   &in.Id,
+		Text: &in.Text,
+		Author: &prisma.UserCreateOneInput{
+			Connect: &prisma.UserWhereUniqueInput{
+				ID: &in.AuthorId,
+			},
+		},
+		Post: &prisma.PostCreateOneInput{
+			Connect: &prisma.PostWhereUniqueInput{
+				ID: &in.PostId,
+			},
+		},
+	},
+	).Exec(Context)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Create comment: %+v\n", comment)
+
+	out, err := json.Marshal(comment)
+	if err != nil {
+		panic(err)
+	}
+	return &CommentsReply{Message: string(out)}, nil
+}
+
+func (s *server) DeleteComment(ctx context.Context, in *CommentArgs) (*CommentsReply, error) {
+	Client := prisma.New(nil)
+	Context := context.TODO()
+
+	_, err := Client.DeleteComment(prisma.CommentWhereUniqueInput{
+		ID: &in.Id,
+	}).Exec(Context)
+
+	if err != nil {
+		panic(err)
+	}
+	message := fmt.Sprintf("Deleted comment %s", in.Id)
+	fmt.Printf(message)
+	return &CommentsReply{Message: message}, nil
+}
+
+func (s *server) UpdateComment(ctx context.Context, in *CommentArgs) (*CommentsReply, error) {
+	Client := prisma.New(nil)
+	Context := context.TODO()
+	comment, err := Client.UpdateComment(prisma.CommentUpdateParams{
+		Where: prisma.CommentWhereUniqueInput{
+			ID: &in.Id,
+		},
+		Data: prisma.CommentUpdateInput{
+			Text: &in.Text,
+		},
+	}).Exec(Context)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Updated comment: %+v\n", comment)
+	out, err := json.Marshal(comment)
+	if err != nil {
+		panic(err)
+	}
+	return &CommentsReply{Message: string(out)}, nil
 }

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package posts;
+option go_package = "./posts.proto";
+import "google/api/annotations.proto";
+
+
+service CommentsAPI {
+  rpc createComment (CommentArgs) returns (CommentsReply) {
+    option (google.api.http) = {
+      post: "/v1/comments/create"
+      body: "*"
+    };
+  }
+  rpc deleteComment (CommentArgs) returns (CommentsReply) {
+    option (google.api.http) = {
+      post: "/v1/comments/delete"
+      body: "*"
+    };
+  }
+  rpc updateComment (CommentArgs) returns (CommentsReply) {
+    option (google.api.http) = {
+      post: "/v1/comments/update"
+      body: "*"
+    };
+  }
+}
+
+message CommentArgs {
+  string id = 1;
+  string text = 2;
+  string AuthorId = 3;
+  string PostId = 4;
+}
+
+message CommentsReply {
+  string message = 1;
+}

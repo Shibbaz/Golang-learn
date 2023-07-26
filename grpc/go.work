@@ -4,6 +4,7 @@ use (
 	.
 	./grpc/users
 	./grpc/posts
+	./grpc/comments
 	./prisma
 	./clients/hello
 	./server
